@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Update UUID columns from VARCHAR(36) to BINARY(16) for better performance and consistency -->
+    <changeSet id="005-update-uuid-columns" author="system">
+        <comment>Update UUID columns to use BINARY(16) instead of VARCHAR(36) for better performance</comment>
+        
+        <!-- Drop foreign key constraints first -->
+        <dropForeignKeyConstraint baseTableName="role_permissions" constraintName="fk_role_permissions_role"/>
+        <dropForeignKeyConstraint baseTableName="role_permissions" constraintName="fk_role_permissions_permission"/>
+        <dropForeignKeyConstraint baseTableName="user_roles" constraintName="fk_user_roles_user"/>
+        <dropForeignKeyConstraint baseTableName="user_roles" constraintName="fk_user_roles_role"/>
+        <dropForeignKeyConstraint baseTableName="user_sessions" constraintName="fk_user_sessions_user"/>
+        <dropForeignKeyConstraint baseTableName="user_sessions" constraintName="fk_user_sessions_device"/>
+        <dropForeignKeyConstraint baseTableName="user_devices" constraintName="fk_user_devices_user"/>
+        <dropForeignKeyConstraint baseTableName="two_factor_auth" constraintName="fk_two_factor_auth_user"/>
+        <dropForeignKeyConstraint baseTableName="password_reset_tokens" constraintName="fk_password_reset_tokens_user"/>
+
+        <!-- Update primary key columns -->
+        <modifyDataType tableName="roles" columnName="id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="permissions" columnName="id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="users" columnName="id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="user_sessions" columnName="id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="user_devices" columnName="id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="two_factor_auth" columnName="id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="password_reset_tokens" columnName="id" newDataType="BINARY(16)"/>
+
+        <!-- Update foreign key columns -->
+        <modifyDataType tableName="role_permissions" columnName="role_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="role_permissions" columnName="permission_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="user_roles" columnName="user_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="user_roles" columnName="role_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="user_sessions" columnName="user_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="user_sessions" columnName="device_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="user_devices" columnName="user_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="two_factor_auth" columnName="user_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="password_reset_tokens" columnName="user_id" newDataType="BINARY(16)"/>
+        
+        <!-- Update audit columns -->
+        <modifyDataType tableName="roles" columnName="created_by" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="roles" columnName="updated_by" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="permissions" columnName="created_by" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="permissions" columnName="updated_by" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="users" columnName="created_by" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="users" columnName="updated_by" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="user_roles" columnName="assigned_by" newDataType="BINARY(16)"/>
+
+        <!-- Re-create foreign key constraints -->
+        <addForeignKeyConstraint baseTableName="role_permissions"
+                                 baseColumnNames="role_id"
+                                 constraintName="fk_role_permissions_role"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="role_permissions"
+                                 baseColumnNames="permission_id"
+                                 constraintName="fk_role_permissions_permission"
+                                 referencedTableName="permissions"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="user_roles"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_roles_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="user_roles"
+                                 baseColumnNames="role_id"
+                                 constraintName="fk_user_roles_role"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="user_sessions"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_sessions_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="user_sessions"
+                                 baseColumnNames="device_id"
+                                 constraintName="fk_user_sessions_device"
+                                 referencedTableName="user_devices"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+
+        <addForeignKeyConstraint baseTableName="user_devices"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_devices_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="two_factor_auth"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_two_factor_auth_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="password_reset_tokens"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_password_reset_tokens_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+
+</databaseChangeLog>

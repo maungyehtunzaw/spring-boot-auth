@@ -73,6 +73,9 @@ dependencies {
 	
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	
+	// Development and Test Dependencies
+	developmentOnly 'com.h2database:h2'  // H2 for development
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.grpc:spring-grpc-test'
 	testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
