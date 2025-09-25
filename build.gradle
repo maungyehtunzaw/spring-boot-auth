@@ -28,6 +28,8 @@ repositories {
 ext {
 	set('springGrpcVersion', "0.11.0")
 	set('springModulithVersion', "1.4.1")
+	set('mapstructVersion', "1.5.5.Final")
+	set('jjwtVersion', "0.12.3")
 }
 
 dependencies {
@@ -40,16 +42,42 @@ dependencies {
 	implementation 'org.springframework.grpc:spring-grpc-server-web-spring-boot-starter'
 	implementation 'org.springframework.modulith:spring-modulith-starter-core'
 	implementation 'org.springframework.modulith:spring-modulith-starter-jpa'
+	
+	// Security & JWT
+	implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+	implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+	implementation "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+	
+	// Mapping
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	
+	// Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	
+	// Redis for session storage
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	
+	// Email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	
+	// TOTP for 2FA
+	implementation 'com.warrenstrange:googleauth:1.5.0'
+	
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	runtimeOnly 'org.springframework.modulith:spring-modulith-actuator'
 	runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.grpc:spring-grpc-test'
 	testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Initial schema setup with basic tables -->
+    <changeSet id="001-create-initial-tables" author="system">
+        <comment>Create initial tables for Spring Boot System</comment>
+        
+        <!-- Create roles table -->
+        <createTable tableName="roles">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(36)"/>
+            <column name="updated_by" type="VARCHAR(36)"/>
+            <column name="deleted_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- Create permissions table -->
+        <createTable tableName="permissions">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="resource" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(36)"/>
+            <column name="updated_by" type="VARCHAR(36)"/>
+            <column name="deleted_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- Create role_permissions junction table -->
+        <createTable tableName="role_permissions">
+            <column name="role_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Add primary key constraint for role_permissions -->
+        <addPrimaryKey tableName="role_permissions" columnNames="role_id,permission_id"/>
+
+        <!-- Add foreign key constraints -->
+        <addForeignKeyConstraint baseTableName="role_permissions"
+                                 baseColumnNames="role_id"
+                                 constraintName="fk_role_permissions_role"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="role_permissions"
+                                 baseColumnNames="permission_id"
+                                 constraintName="fk_role_permissions_permission"
+                                 referencedTableName="permissions"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <!-- Create indexes for better performance -->
+        <createIndex tableName="roles" indexName="idx_roles_name">
+            <column name="name"/>
+        </createIndex>
+
+        <createIndex tableName="roles" indexName="idx_roles_deleted_at">
+            <column name="deleted_at"/>
+        </createIndex>
+
+        <createIndex tableName="permissions" indexName="idx_permissions_name">
+            <column name="name"/>
+        </createIndex>
+
+        <createIndex tableName="permissions" indexName="idx_permissions_resource_action">
+            <column name="resource"/>
+            <column name="action"/>
+        </createIndex>
+
+        <createIndex tableName="permissions" indexName="idx_permissions_deleted_at">
+            <column name="deleted_at"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>

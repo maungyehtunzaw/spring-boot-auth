@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Default roles and permissions data -->
+    <changeSet id="001-insert-default-roles-permissions" author="system">
+        <comment>Insert default roles and permissions for authentication system</comment>
+        
+        <!-- Insert default roles -->
+        <insert tableName="roles">
+            <column name="id" value="550e8400-e29b-41d4-a716-446655440001"/>
+            <column name="name" value="GUEST"/>
+            <column name="description" value="Guest user with limited access"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="id" value="550e8400-e29b-41d4-a716-446655440002"/>
+            <column name="name" value="USER"/>
+            <column name="description" value="Regular authenticated user"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="name" value="ADMIN"/>
+            <column name="description" value="System administrator with full access"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="id" value="550e8400-e29b-41d4-a716-446655440004"/>
+            <column name="name" value="SYSTEM"/>
+            <column name="description" value="System-level operations"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <!-- Insert default permissions -->
+        <!-- Guest permissions -->
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440001"/>
+            <column name="name" value="GUEST_ACCESS"/>
+            <column name="description" value="Basic guest access to public resources"/>
+            <column name="resource" value="public"/>
+            <column name="action" value="read"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <!-- User permissions -->
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440002"/>
+            <column name="name" value="USER_PROFILE_READ"/>
+            <column name="description" value="Read own user profile"/>
+            <column name="resource" value="user_profile"/>
+            <column name="action" value="read"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440003"/>
+            <column name="name" value="USER_PROFILE_UPDATE"/>
+            <column name="description" value="Update own user profile"/>
+            <column name="resource" value="user_profile"/>
+            <column name="action" value="update"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440004"/>
+            <column name="name" value="USER_SESSION_MANAGE"/>
+            <column name="description" value="Manage own user sessions"/>
+            <column name="resource" value="user_session"/>
+            <column name="action" value="manage"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440005"/>
+            <column name="name" value="USER_DEVICE_MANAGE"/>
+            <column name="description" value="Manage own user devices"/>
+            <column name="resource" value="user_device"/>
+            <column name="action" value="manage"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <!-- Admin permissions -->
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440006"/>
+            <column name="name" value="USER_ADMIN"/>
+            <column name="description" value="Full user administration"/>
+            <column name="resource" value="user"/>
+            <column name="action" value="admin"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440007"/>
+            <column name="name" value="ROLE_ADMIN"/>
+            <column name="description" value="Role and permission administration"/>
+            <column name="resource" value="role"/>
+            <column name="action" value="admin"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440008"/>
+            <column name="name" value="SYSTEM_ADMIN"/>
+            <column name="description" value="System administration"/>
+            <column name="resource" value="system"/>
+            <column name="action" value="admin"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <!-- System permissions -->
+        <insert tableName="permissions">
+            <column name="id" value="660e8400-e29b-41d4-a716-446655440009"/>
+            <column name="name" value="SYSTEM_OPERATION"/>
+            <column name="description" value="System-level operations"/>
+            <column name="resource" value="system"/>
+            <column name="action" value="operate"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <!-- Assign permissions to roles -->
+        <!-- GUEST role permissions -->
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440001"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440001"/>
+        </insert>
+
+        <!-- USER role permissions (includes guest permissions) -->
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440002"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440001"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440002"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440002"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440002"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440003"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440002"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440004"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440002"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440005"/>
+        </insert>
+
+        <!-- ADMIN role permissions (includes user permissions) -->
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440001"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440002"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440003"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440004"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440005"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440006"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440007"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440008"/>
+        </insert>
+
+        <!-- SYSTEM role permissions -->
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440004"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440009"/>
+        </insert>
+        <insert tableName="role_permissions">
+            <column name="role_id" value="550e8400-e29b-41d4-a716-446655440004"/>
+            <column name="permission_id" value="660e8400-e29b-41d4-a716-446655440008"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

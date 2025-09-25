@@ -120,9 +120,15 @@ src/main/java/dev/yehtun/spring_boot_system/
 │   │   │   ├── UserDeviceRepository.java
 │   │   │   ├── TwoFactorAuthRepository.java
 │   │   │   └── PasswordResetTokenRepository.java
+│   │   ├── mappers/                   # Entity-DTO mappers
+│   │   │   ├── UserMapper.java
+│   │   │   ├── AuthMapper.java
+│   │   │   ├── SessionMapper.java
+│   │   │   └── DeviceMapper.java
 │   │   ├── config/                    # Module configuration
 │   │   │   ├── AuthModuleConfig.java
-│   │   │   └── JwtConfig.java
+│   │   │   ├── JwtConfig.java
+│   │   │   └── MapperConfig.java
 │   │   └── adapters/                  # External service adapters
 │   │       ├── EmailAdapter.java
 │   │       ├── RedisAdapter.java

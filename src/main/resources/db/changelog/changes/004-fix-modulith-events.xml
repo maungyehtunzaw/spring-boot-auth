@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Fix event_publication table for Spring Modulith compatibility -->
+    <changeSet id="004-fix-event-publication-table" author="system">
+        <comment>Fix event_publication table to match Spring Modulith requirements</comment>
+        
+        <!-- Drop the existing table and recreate with correct schema -->
+        <dropTable tableName="event_publication"/>
+        
+        <!-- Recreate the table with Spring Modulith expected schema -->
+        <createTable tableName="event_publication">
+            <column name="id" type="BINARY(16)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="event_type" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="listener_id" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publication_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="serialized_event" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="completion_date" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- Create indexes for better performance -->
+        <createIndex tableName="event_publication" indexName="idx_event_publication_event_type_v2">
+            <column name="event_type"/>
+        </createIndex>
+
+        <createIndex tableName="event_publication" indexName="idx_event_publication_listener_id_v2">
+            <column name="listener_id"/>
+        </createIndex>
+
+        <createIndex tableName="event_publication" indexName="idx_event_publication_publication_date_v2">
+            <column name="publication_date"/>
+        </createIndex>
+
+        <createIndex tableName="event_publication" indexName="idx_event_publication_completion_date_v2">
+            <column name="completion_date"/>
+        </createIndex>
+
+        <!-- Composite index for finding incomplete events -->
+        <createIndex tableName="event_publication" indexName="idx_event_publication_incomplete_v2">
+            <column name="completion_date"/>
+            <column name="publication_date"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>
