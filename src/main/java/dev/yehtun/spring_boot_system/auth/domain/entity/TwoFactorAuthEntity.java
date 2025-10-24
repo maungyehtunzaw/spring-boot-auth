@@ -79,9 +79,11 @@ public class TwoFactorAuthEntity extends AuditableEntity {
     private LocalDateTime lastFailedAttemptAt;
 
     @Column(name = "method", nullable = false, length = 20)
+    @Builder.Default
     private String method = "TOTP"; // Default to TOTP
 
     @Column(name = "verified", nullable = false)
+    @Builder.Default
     private boolean verified = false;
 
     @Column(name = "verified_at")

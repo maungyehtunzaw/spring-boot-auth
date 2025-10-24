@@ -386,6 +386,7 @@ class UserRepositoryTest {
                     .username("unverified")
                     .email("unverified@example.com")
                     .userType(UserType.USER)
+                    .userStatus(UserStatus.PENDING_VERIFICATION)
                     .emailVerified(false)
                     .build();
             entityManager.persistAndFlush(unverifiedUser);

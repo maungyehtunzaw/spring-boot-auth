@@ -33,26 +33,17 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, UU
     // Basic finder methods
     Optional<PermissionEntity> findByName(String name);
     
-    Optional<PermissionEntity> findByCode(String code);
-    
     boolean existsByName(String name);
     
-    boolean existsByCode(String code);
+    List<PermissionEntity> findByIsActiveTrue();
     
-    List<PermissionEntity> findByActiveTrue();
-    
-    List<PermissionEntity> findByActiveFalse();
+    List<PermissionEntity> findByIsActiveFalse();
 
-    // Category and grouping queries
+    // Category queries
     List<PermissionEntity> findByCategory(String category);
-    
-    List<PermissionEntity> findByModule(String module);
     
     @Query("SELECT DISTINCT p.category FROM PermissionEntity p WHERE p.category IS NOT NULL ORDER BY p.category")
     List<String> findAllCategories();
-    
-    @Query("SELECT DISTINCT p.module FROM PermissionEntity p WHERE p.module IS NOT NULL ORDER BY p.module")
-    List<String> findAllModules();
 
     // Role-permission relationship queries
     @Query("SELECT p FROM PermissionEntity p JOIN p.roles r WHERE r = :role")
@@ -90,14 +81,11 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, UU
     @Query("SELECT p FROM PermissionEntity p WHERE p.parentPermission IS NULL")
     List<PermissionEntity> findRootPermissions();
 
-    // System and core permissions
-    @Query("SELECT p FROM PermissionEntity p WHERE p.isSystem = true")
+    // System permissions
+    @Query("SELECT p FROM PermissionEntity p WHERE p.isSystemPermission = true")
     List<PermissionEntity> findSystemPermissions();
     
-    @Query("SELECT p FROM PermissionEntity p WHERE p.isCore = true")
-    List<PermissionEntity> findCorePermissions();
-    
-    @Query("SELECT p FROM PermissionEntity p WHERE p.isSystem = true AND p.name = :name")
+    @Query("SELECT p FROM PermissionEntity p WHERE p.isSystemPermission = true AND p.name = :name")
     Optional<PermissionEntity> findSystemPermissionByName(@Param("name") String name);
 
     // Search and filtering
@@ -106,10 +94,10 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, UU
            "LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     Page<PermissionEntity> searchPermissions(@Param("searchTerm") String searchTerm, Pageable pageable);
     
-    @Query("SELECT p FROM PermissionEntity p WHERE p.active = :active")
+    @Query("SELECT p FROM PermissionEntity p WHERE p.isActive = :active")
     Page<PermissionEntity> findByActive(@Param("active") boolean active, Pageable pageable);
     
-    @Query("SELECT p FROM PermissionEntity p WHERE p.category = :category AND p.isActive = true")
+    @Query("SELECT p FROM PermissionEntity p WHERE p.category = :category AND p.isActive = true ORDER BY p.name")
     List<PermissionEntity> findActiveByCategoryOrderByName(@Param("category") String category);
 
     // Permission validation and checking
@@ -124,10 +112,10 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, UU
     boolean hasRolePermission(@Param("roleId") UUID roleId, @Param("permissionName") String permissionName);
 
     // Statistics and counts
-    @Query("SELECT COUNT(p) FROM PermissionEntity p WHERE p.active = true")
+    @Query("SELECT COUNT(p) FROM PermissionEntity p WHERE p.isActive = true")
     long countActivePermissions();
     
-    @Query("SELECT COUNT(p) FROM PermissionEntity p WHERE p.isSystem = true")
+    @Query("SELECT COUNT(p) FROM PermissionEntity p WHERE p.isSystemPermission = true")
     long countSystemPermissions();
     
     @Query("SELECT COUNT(p) FROM PermissionEntity p WHERE p.category = :category")
@@ -138,11 +126,11 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, UU
 
     // Bulk operations
     @Modifying
-    @Query("UPDATE PermissionEntity p SET p.active = :active WHERE p.id IN :permissionIds")
+    @Query("UPDATE PermissionEntity p SET p.isActive = :active WHERE p.id IN :permissionIds")
     int updateActiveStatus(@Param("permissionIds") Set<UUID> permissionIds, @Param("active") boolean active);
     
     @Modifying
-    @Query("UPDATE PermissionEntity p SET p.lastModifiedAt = :timestamp WHERE p.id = :permissionId")
+    @Query("UPDATE PermissionEntity p SET p.updatedAt = :timestamp WHERE p.id = :permissionId")
     int updateLastModified(@Param("permissionId") UUID permissionId, @Param("timestamp") LocalDateTime timestamp);
 
     // Advanced filtering
@@ -150,18 +138,14 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, UU
            "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
            "(:description IS NULL OR LOWER(p.description) LIKE LOWER(CONCAT('%', :description, '%'))) AND " +
            "(:category IS NULL OR p.category = :category) AND " +
-           "(:module IS NULL OR p.module = :module) AND " +
-           "(:active IS NULL OR p.active = :active) AND " +
-           "(:isSystem IS NULL OR p.isSystem = :isSystem) AND " +
-           "(:isCore IS NULL OR p.isCore = :isCore)")
+           "(:isActive IS NULL OR p.isActive = :isActive) AND " +
+           "(:isSystemPermission IS NULL OR p.isSystemPermission = :isSystemPermission)")
     Page<PermissionEntity> findPermissionsWithFilters(
         @Param("name") String name,
         @Param("description") String description,
         @Param("category") String category,
-        @Param("module") String module,
-        @Param("active") Boolean active,
-        @Param("isSystem") Boolean isSystem,
-        @Param("isCore") Boolean isCore,
+        @Param("isActive") Boolean isActive,
+        @Param("isSystemPermission") Boolean isSystemPermission,
         Pageable pageable
     );
 

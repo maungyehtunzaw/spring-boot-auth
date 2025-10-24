@@ -65,27 +65,11 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
     @Query("SELECT DISTINCT r FROM RoleEntity r JOIN r.permissions p WHERE p.name IN :permissionNames")
     List<RoleEntity> findByPermissionNames(@Param("permissionNames") Set<String> permissionNames);
 
-    // Role hierarchy queries
-    @Query("SELECT r FROM RoleEntity r WHERE r.parentRole = :parentRole")
-    List<RoleEntity> findByParentRole(@Param("parentRole") RoleEntity parentRole);
-    
-    @Query("SELECT r FROM RoleEntity r WHERE r.parentRole.id = :parentRoleId")
-    List<RoleEntity> findByParentRoleId(@Param("parentRoleId") UUID parentRoleId);
-    
-    @Query("SELECT r FROM RoleEntity r WHERE r.parentRole IS NULL")
-    List<RoleEntity> findRootRoles();
-    
-    @Query("SELECT r FROM RoleEntity r WHERE r.level = :level")
-    List<RoleEntity> findByLevel(@Param("level") Integer level);
-
-    // System and default roles
-    @Query("SELECT r FROM RoleEntity r WHERE r.isSystem = true")
+    // System roles
+    @Query("SELECT r FROM RoleEntity r WHERE r.isSystemRole = true")
     List<RoleEntity> findSystemRoles();
     
-    @Query("SELECT r FROM RoleEntity r WHERE r.isDefault = true")
-    List<RoleEntity> findDefaultRoles();
-    
-    @Query("SELECT r FROM RoleEntity r WHERE r.isSystem = true AND r.name = :name")
+    @Query("SELECT r FROM RoleEntity r WHERE r.isSystemRole = true AND r.name = :name")
     Optional<RoleEntity> findSystemRoleByName(@Param("name") String name);
 
     // Search and filtering
@@ -101,7 +85,7 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
     @Query("SELECT COUNT(r) FROM RoleEntity r WHERE r.isActive = true")
     long countActiveRoles();
     
-    @Query("SELECT COUNT(r) FROM RoleEntity r WHERE r.isSystem = true")
+    @Query("SELECT COUNT(r) FROM RoleEntity r WHERE r.isSystemRole = true")
     long countSystemRoles();
     
     @Query("SELECT COUNT(u) FROM UserEntity u JOIN u.roles r WHERE r.id = :roleId")
@@ -124,14 +108,12 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
            "(:name IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
            "(:description IS NULL OR LOWER(r.description) LIKE LOWER(CONCAT('%', :description, '%'))) AND " +
            "(:active IS NULL OR r.isActive = :active) AND " +
-           "(:isSystem IS NULL OR r.isSystem = :isSystem) AND " +
-           "(:isDefault IS NULL OR r.isDefault = :isDefault)")
+           "(:isSystemRole IS NULL OR r.isSystemRole = :isSystemRole)")
     Page<RoleEntity> findRolesWithFilters(
         @Param("name") String name,
         @Param("description") String description,
         @Param("active") Boolean active,
-        @Param("isSystem") Boolean isSystem,
-        @Param("isDefault") Boolean isDefault,
+        @Param("isSystemRole") Boolean isSystemRole,
         Pageable pageable
     );
 }

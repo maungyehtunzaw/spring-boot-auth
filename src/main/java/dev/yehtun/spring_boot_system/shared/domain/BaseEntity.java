@@ -26,8 +26,7 @@ public abstract class BaseEntity {
     private UUID id;
 
     protected BaseEntity() {
-        // Generate UUID for unit tests and non-persisted entities
-        this.id = UUID.randomUUID();
+        // JPA will generate UUID on persist
     }
 
     public UUID getId() {

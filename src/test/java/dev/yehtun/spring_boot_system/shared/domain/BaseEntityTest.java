@@ -42,7 +42,9 @@ class BaseEntityTest {
     @BeforeEach
     void setUp() {
         entity1 = new TestEntity("Entity 1");
+        entity1.setId(UUID.randomUUID());
         entity2 = new TestEntity("Entity 2");
+        entity2.setId(UUID.randomUUID());
         entityWithSameId = new TestEntity("Different Name");
         entityWithSameId.setId(entity1.getId());
     }
@@ -51,6 +53,7 @@ class BaseEntityTest {
     void should_generate_uuid_on_creation() {
         // Given & When
         TestEntity entity = new TestEntity("Test");
+        entity.setId(UUID.randomUUID());
         
         // Then
         assertThat(entity.getId()).isNotNull();

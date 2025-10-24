@@ -43,6 +43,7 @@ class AuditableEntityTest {
     @BeforeEach
     void setUp() {
         entity = new TestAuditableEntity("Test Entity");
+        entity.setId(UUID.randomUUID());
         testUserId = UUID.randomUUID();
     }
 
