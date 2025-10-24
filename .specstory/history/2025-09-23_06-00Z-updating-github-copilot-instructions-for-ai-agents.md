@@ -1481,3 +1481,35 @@ The imports are missing but let me test if this fixes the main issue:
 
 ---
 
+_**User (2025-10-24 13:50Z)**_
+
+which port is tha system is running ?
+
+---
+
+_**Assistant (copilot/claude-haiku-4.5)**_
+
+Looking at your `application-dev.properties` file, **the system is running on port 8080** (the default Spring Boot port).
+
+You can see this is not explicitly configured, so it uses the Spring Boot default:
+- **Port: 8080**
+- **URL: http://localhost:8080**
+
+If you want to change this, you can add this to your `application-dev.properties`:
+
+```properties
+server.port=8080
+```
+
+Or set it to a different port like `9090`:
+
+```properties
+server.port=9090
+```
+
+**But wait** - we still have that `PermissionEntity` issue blocking the startup. Let me quickly fix that so the application can actually start and you can access it on port 8080.
+
+The current error is that `PermissionEntity` is missing the `parentPermission` field. Let me add it: Perfect! I can see the entity **already has** the `parentPermission` and `childPermissions` fields! So the problem must be in the repository query method naming. Let me check what the repository method is expecting: The issue is the method name. Spring Data JPA is trying to parse `findByParentPermissionId` but the entity has a relationship field `parentPermission` with type `PermissionEntity`, not a simple ID field. The method should use Spring Data naming convention properly. Let me check the repository method: Great! I can see that the repository already HAS the explicit `@Query` for `findByParentPermissionId` and it looks correct. The issue must be that there are **other method names** that Spring Data JPA is trying to parse automatically. Let me search for methods without `@Query` annotations that might be problematic: All those queries look correct with `@Query` annotations. Let me test the application to see what the ACTUAL current error is now: 
+
+---
+
