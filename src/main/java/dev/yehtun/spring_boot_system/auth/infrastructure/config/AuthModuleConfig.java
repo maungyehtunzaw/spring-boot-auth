@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @ComponentScan(basePackages = "dev.yehtun.spring_boot_system.auth")
-@EnableJpaRepositories(basePackages = "dev.yehtun.spring_boot_system.auth.infrastructure.repositories")
+@EnableJpaRepositories(basePackages = "dev.yehtun.spring_boot_system.auth.infrastructure.repository")
 @EnableTransactionManagement
 public class AuthModuleConfig {
     

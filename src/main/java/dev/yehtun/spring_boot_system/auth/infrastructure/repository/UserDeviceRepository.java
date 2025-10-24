@@ -38,16 +38,16 @@ public interface UserDeviceRepository extends JpaRepository<UserDeviceEntity, UU
     List<UserDeviceEntity> findByUserId(UUID userId);
 
     // Device trust and status queries
-    @Query("SELECT d FROM UserDeviceEntity d WHERE d.user = :user AND d.trusted = true")
+    @Query("SELECT d FROM UserDeviceEntity d WHERE d.user = :user AND d.isTrusted = true")
     List<UserDeviceEntity> findTrustedDevicesByUser(@Param("user") UserEntity user);
-    
-    @Query("SELECT d FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.trusted = true")
+
+    @Query("SELECT d FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.isTrusted = true")
     List<UserDeviceEntity> findTrustedDevicesByUserId(@Param("userId") UUID userId);
     
-    @Query("SELECT d FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.active = true")
+    @Query("SELECT d FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.isActive = true")
     List<UserDeviceEntity> findActiveDevicesByUserId(@Param("userId") UUID userId);
     
-    @Query("SELECT d FROM UserDeviceEntity d WHERE d.trusted = true AND d.active = true")
+    @Query("SELECT d FROM UserDeviceEntity d WHERE d.isTrusted = true AND d.isActive = true")
     List<UserDeviceEntity> findAllTrustedActiveDevices();
 
     // Device identification queries
@@ -98,10 +98,10 @@ public interface UserDeviceRepository extends JpaRepository<UserDeviceEntity, UU
     List<UserDeviceEntity> findByUserIdAndIpAddress(@Param("userId") UUID userId, @Param("ipAddress") String ipAddress);
 
     // Security and validation queries
-    @Query("SELECT d FROM UserDeviceEntity d WHERE d.registeredAt < :cutoffDate AND d.trusted = false")
-    List<UserDeviceEntity> findUnverifiedOldDevices(@Param("cutoffDate") LocalDateTime cutoffDate);
+    @Query("SELECT d FROM UserDeviceEntity d WHERE d.registeredAt < :cutoffDate AND d.isTrusted = false")
+    List<UserDeviceEntity> findUntrustedOldDevices(@Param("cutoffDate") LocalDateTime cutoffDate);
     
-    @Query("SELECT d FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.trusted = false")
+    @Query("SELECT d FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.isTrusted = false")
     List<UserDeviceEntity> findUntrustedDevicesByUserId(@Param("userId") UUID userId);
     
     @Query("SELECT COUNT(d) FROM UserDeviceEntity d WHERE d.lastIpAddress = :ipAddress AND d.registeredAt >= :fromTime")
@@ -111,10 +111,10 @@ public interface UserDeviceRepository extends JpaRepository<UserDeviceEntity, UU
     @Query("SELECT COUNT(d) FROM UserDeviceEntity d WHERE d.user.id = :userId")
     long countDevicesByUserId(@Param("userId") UUID userId);
     
-    @Query("SELECT COUNT(d) FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.trusted = true")
+    @Query("SELECT COUNT(d) FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.isTrusted = true")
     long countTrustedDevicesByUserId(@Param("userId") UUID userId);
     
-    @Query("SELECT COUNT(d) FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.active = true")
+    @Query("SELECT COUNT(d) FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.isActive = true")
     long countActiveDevicesByUserId(@Param("userId") UUID userId);
     
     @Query("SELECT COUNT(d) FROM UserDeviceEntity d WHERE d.registeredAt >= :fromDate")
@@ -122,28 +122,27 @@ public interface UserDeviceRepository extends JpaRepository<UserDeviceEntity, UU
 
     // Device management operations
     @Modifying
-    @Query("UPDATE UserDeviceEntity d SET d.trusted = :trusted WHERE d.id = :deviceId")
+    @Query("UPDATE UserDeviceEntity d SET d.isTrusted = :trusted WHERE d.id = :deviceId")
     int updateTrustedStatus(@Param("deviceId") UUID deviceId, @Param("trusted") boolean trusted);
     
     @Modifying
-    @Query("UPDATE UserDeviceEntity d SET d.active = :active WHERE d.id = :deviceId")
+    @Query("UPDATE UserDeviceEntity d SET d.isActive = :active WHERE d.id = :deviceId")
     int updateActiveStatus(@Param("deviceId") UUID deviceId, @Param("active") boolean active);
     
     @Modifying
     @Query("UPDATE UserDeviceEntity d SET d.lastUsedAt = :lastUsedAt, d.lastIpAddress = :ipAddress WHERE d.id = :deviceId")
     int updateLastUsed(@Param("deviceId") UUID deviceId, @Param("lastUsedAt") LocalDateTime lastUsedAt, @Param("ipAddress") String ipAddress);
     
-    @Modifying
-    @Query("UPDATE UserDeviceEntity d SET d.active = false WHERE d.user.id = :userId")
-    int deactivateAllUserDevices(@Param("userId") UUID userId);
+    @Query("UPDATE UserDeviceEntity d SET d.isActive = false WHERE d.user.id = :userId")
+    int deactivateAllDevicesForUser(@Param("userId") UUID userId);
 
     // Device cleanup operations
     @Modifying
-    @Query("DELETE FROM UserDeviceEntity d WHERE d.registeredAt < :cutoffDate AND d.trusted = false")
+    @Query("DELETE FROM UserDeviceEntity d WHERE d.registeredAt < :cutoffDate AND d.isTrusted = false")
     int deleteUnverifiedOldDevices(@Param("cutoffDate") LocalDateTime cutoffDate);
     
     @Modifying
-    @Query("DELETE FROM UserDeviceEntity d WHERE d.lastUsedAt < :cutoffDate AND d.active = false")
+    @Query("DELETE FROM UserDeviceEntity d WHERE d.lastUsedAt < :cutoffDate AND d.isActive = false")
     int deleteInactiveOldDevices(@Param("cutoffDate") LocalDateTime cutoffDate);
     
     @Modifying
@@ -155,16 +154,16 @@ public interface UserDeviceRepository extends JpaRepository<UserDeviceEntity, UU
            "(:userId IS NULL OR d.user.id = :userId) AND " +
            "(:deviceType IS NULL OR d.deviceType = :deviceType) AND " +
            "(:platform IS NULL OR d.platform = :platform) AND " +
-           "(:trusted IS NULL OR d.trusted = :trusted) AND " +
-           "(:active IS NULL OR d.active = :active) AND " +
+           "(:isTrusted IS NULL OR d.isTrusted = :isTrusted) AND " +
+           "(:isActive IS NULL OR d.isActive = :isActive) AND " +
            "(:fromDate IS NULL OR d.registeredAt >= :fromDate) AND " +
            "(:toDate IS NULL OR d.registeredAt <= :toDate)")
     Page<UserDeviceEntity> findDevicesWithFilters(
         @Param("userId") UUID userId,
         @Param("deviceType") String deviceType,
         @Param("platform") String platform,
-        @Param("trusted") Boolean trusted,
-        @Param("active") Boolean active,
+        @Param("isTrusted") Boolean isTrusted,
+        @Param("isActive") Boolean isActive,
         @Param("fromDate") LocalDateTime fromDate,
         @Param("toDate") LocalDateTime toDate,
         Pageable pageable
@@ -172,11 +171,11 @@ public interface UserDeviceRepository extends JpaRepository<UserDeviceEntity, UU
 
     // Device validation
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END " +
-           "FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.deviceId = :deviceId AND d.trusted = true AND d.active = true")
-    boolean isTrustedActiveDevice(@Param("userId") UUID userId, @Param("deviceId") String deviceId);
+           "FROM UserDeviceEntity d WHERE d.user.id = :userId AND d.deviceId = :deviceId AND d.isTrusted = true AND d.isActive = true")
+    boolean isValidTrustedDevice(@Param("userId") UUID userId, @Param("deviceId") String deviceId);
     
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END " +
-           "FROM UserDeviceEntity d WHERE d.fingerprint = :fingerprint AND d.trusted = true")
+           "FROM UserDeviceEntity d WHERE d.fingerprint = :fingerprint AND d.isTrusted = true")
     boolean isTrustedDeviceByFingerprint(@Param("fingerprint") String fingerprint);
 
     // Device search

@@ -52,6 +52,14 @@ public class PermissionEntity extends AuditableEntity {
     @Column(name = "category", length = 50)
     private String category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_permission_id")
+    private PermissionEntity parentPermission;
+
+    @OneToMany(mappedBy = "parentPermission", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<PermissionEntity> childPermissions = new HashSet<>();
+
     @Column(name = "is_system_permission", nullable = false)
     @Builder.Default
     private Boolean isSystemPermission = false;

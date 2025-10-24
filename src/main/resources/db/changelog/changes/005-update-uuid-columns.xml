@@ -4,9 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <!-- Update UUID columns from VARCHAR(36) to BINARY(16) for better performance and consistency -->
+    <!-- Update UUID columns from VARCHAR(36) to VARCHAR(100) for better flexibility -->
     <changeSet id="005-update-uuid-columns" author="system">
-        <comment>Update UUID columns to use BINARY(16) instead of VARCHAR(36) for better performance</comment>
+        <comment>Update UUID columns to use VARCHAR(100) instead of VARCHAR(36) for better flexibility</comment>
         
         <!-- Drop foreign key constraints first -->
         <dropForeignKeyConstraint baseTableName="role_permissions" constraintName="fk_role_permissions_role"/>
@@ -20,33 +20,33 @@
         <dropForeignKeyConstraint baseTableName="password_reset_tokens" constraintName="fk_password_reset_tokens_user"/>
 
         <!-- Update primary key columns -->
-        <modifyDataType tableName="roles" columnName="id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="permissions" columnName="id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="users" columnName="id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="user_sessions" columnName="id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="user_devices" columnName="id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="two_factor_auth" columnName="id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="password_reset_tokens" columnName="id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="roles" columnName="id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="permissions" columnName="id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="users" columnName="id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="user_sessions" columnName="id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="user_devices" columnName="id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="two_factor_auth" columnName="id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="password_reset_tokens" columnName="id" newDataType="VARCHAR(100)"/>
 
         <!-- Update foreign key columns -->
-        <modifyDataType tableName="role_permissions" columnName="role_id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="role_permissions" columnName="permission_id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="user_roles" columnName="user_id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="user_roles" columnName="role_id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="user_sessions" columnName="user_id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="user_sessions" columnName="device_id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="user_devices" columnName="user_id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="two_factor_auth" columnName="user_id" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="password_reset_tokens" columnName="user_id" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="role_permissions" columnName="role_id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="role_permissions" columnName="permission_id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="user_roles" columnName="user_id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="user_roles" columnName="role_id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="user_sessions" columnName="user_id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="user_sessions" columnName="device_id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="user_devices" columnName="user_id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="two_factor_auth" columnName="user_id" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="password_reset_tokens" columnName="user_id" newDataType="VARCHAR(100)"/>
         
         <!-- Update audit columns -->
-        <modifyDataType tableName="roles" columnName="created_by" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="roles" columnName="updated_by" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="permissions" columnName="created_by" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="permissions" columnName="updated_by" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="users" columnName="created_by" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="users" columnName="updated_by" newDataType="BINARY(16)"/>
-        <modifyDataType tableName="user_roles" columnName="assigned_by" newDataType="BINARY(16)"/>
+        <modifyDataType tableName="roles" columnName="created_by" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="roles" columnName="updated_by" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="permissions" columnName="created_by" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="permissions" columnName="updated_by" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="users" columnName="created_by" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="users" columnName="updated_by" newDataType="VARCHAR(100)"/>
+        <modifyDataType tableName="user_roles" columnName="assigned_by" newDataType="VARCHAR(100)"/>
 
         <!-- Re-create foreign key constraints -->
         <addForeignKeyConstraint baseTableName="role_permissions"

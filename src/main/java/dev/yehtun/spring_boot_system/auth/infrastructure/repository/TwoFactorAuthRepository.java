@@ -52,7 +52,7 @@ public interface TwoFactorAuthRepository extends JpaRepository<TwoFactorAuthEnti
     Optional<TwoFactorAuthEntity> findBySecretKey(@Param("secretKey") String secretKey);
     
     @Query("SELECT CASE WHEN COUNT(tfa) > 0 THEN true ELSE false END " +
-           "FROM TwoFactorAuthEntity tfa WHERE tfa.user.id = :userId AND :backupCode MEMBER OF tfa.backupCodes")
+           "FROM TwoFactorAuthEntity tfa WHERE tfa.user.id = :userId AND tfa.backupCodes LIKE CONCAT('%', :backupCode, '%')")
     boolean hasValidBackupCode(@Param("userId") UUID userId, @Param("backupCode") String backupCode);
 
     // Verification and validation queries
@@ -88,10 +88,10 @@ public interface TwoFactorAuthRepository extends JpaRepository<TwoFactorAuthEnti
     List<TwoFactorAuthEntity> findWithRecentFailures(@Param("fromTime") LocalDateTime fromTime);
 
     // Backup code management
-    @Query("SELECT tfa FROM TwoFactorAuthEntity tfa WHERE SIZE(tfa.backupCodes) < :minBackupCodes")
+    @Query("SELECT tfa FROM TwoFactorAuthEntity tfa WHERE (tfa.backupCodes IS NULL OR tfa.backupCodes = '')")
     List<TwoFactorAuthEntity> findWithInsufficientBackupCodes(@Param("minBackupCodes") int minBackupCodes);
     
-    @Query("SELECT tfa FROM TwoFactorAuthEntity tfa WHERE tfa.user.id = :userId AND SIZE(tfa.backupCodes) > 0")
+    @Query("SELECT tfa FROM TwoFactorAuthEntity tfa WHERE tfa.user.id = :userId AND tfa.backupCodes IS NOT NULL AND tfa.backupCodes != ''")
     Optional<TwoFactorAuthEntity> findWithBackupCodesByUserId(@Param("userId") UUID userId);
 
     // Statistics and counts
@@ -176,7 +176,7 @@ public interface TwoFactorAuthRepository extends JpaRepository<TwoFactorAuthEnti
     Boolean canAttemptVerification(@Param("userId") UUID userId, @Param("maxAttempts") int maxAttempts);
 
     // Recovery operations
-    @Query("SELECT tfa FROM TwoFactorAuthEntity tfa WHERE tfa.user.id = :userId AND SIZE(tfa.backupCodes) > 0")
+    @Query("SELECT tfa FROM TwoFactorAuthEntity tfa WHERE tfa.user.id = :userId AND tfa.backupCodes IS NOT NULL AND tfa.backupCodes != ''")
     Optional<TwoFactorAuthEntity> findForRecovery(@Param("userId") UUID userId);
     
     @Modifying

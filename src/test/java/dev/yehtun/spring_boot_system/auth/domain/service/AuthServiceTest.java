@@ -68,7 +68,7 @@ class AuthServiceTest {
         // Given
         String username = "testuser";
         String email = "test@example.com";
-        String password = "password123";
+        String password = "Password123"; // Valid password with uppercase, lowercase, and digit
         String encodedPassword = "encoded-password";
         
         when(userRepository.existsByUsername(username)).thenReturn(false);

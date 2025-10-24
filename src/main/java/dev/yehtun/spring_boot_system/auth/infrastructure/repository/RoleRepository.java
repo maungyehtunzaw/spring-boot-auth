@@ -38,9 +38,9 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
     
     boolean existsByCode(String code);
     
-    List<RoleEntity> findByActiveTrue();
+    List<RoleEntity> findByIsActiveTrue();
     
-    List<RoleEntity> findByActiveFalse();
+    List<RoleEntity> findByIsActiveFalse();
 
     // User-role relationship queries
     @Query("SELECT r FROM RoleEntity r JOIN r.users u WHERE u = :user")
@@ -94,11 +94,11 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
            "LOWER(r.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     Page<RoleEntity> searchRoles(@Param("searchTerm") String searchTerm, Pageable pageable);
     
-    @Query("SELECT r FROM RoleEntity r WHERE r.active = :active")
+    @Query("SELECT r FROM RoleEntity r WHERE r.isActive = :active")
     Page<RoleEntity> findByActive(@Param("active") boolean active, Pageable pageable);
 
     // Statistics and counts
-    @Query("SELECT COUNT(r) FROM RoleEntity r WHERE r.active = true")
+    @Query("SELECT COUNT(r) FROM RoleEntity r WHERE r.isActive = true")
     long countActiveRoles();
     
     @Query("SELECT COUNT(r) FROM RoleEntity r WHERE r.isSystem = true")
@@ -112,18 +112,18 @@ public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
 
     // Bulk operations
     @Modifying
-    @Query("UPDATE RoleEntity r SET r.active = :active WHERE r.id IN :roleIds")
+    @Query("UPDATE RoleEntity r SET r.isActive = :active WHERE r.id IN :roleIds")
     int updateActiveStatus(@Param("roleIds") Set<UUID> roleIds, @Param("active") boolean active);
     
     @Modifying
-    @Query("UPDATE RoleEntity r SET r.lastModifiedAt = :timestamp WHERE r.id = :roleId")
+    @Query("UPDATE RoleEntity r SET r.updatedAt = :timestamp WHERE r.id = :roleId")
     int updateLastModified(@Param("roleId") UUID roleId, @Param("timestamp") LocalDateTime timestamp);
 
     // Advanced filtering
     @Query("SELECT r FROM RoleEntity r WHERE " +
            "(:name IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
            "(:description IS NULL OR LOWER(r.description) LIKE LOWER(CONCAT('%', :description, '%'))) AND " +
-           "(:active IS NULL OR r.active = :active) AND " +
+           "(:active IS NULL OR r.isActive = :active) AND " +
            "(:isSystem IS NULL OR r.isSystem = :isSystem) AND " +
            "(:isDefault IS NULL OR r.isDefault = :isDefault)")
     Page<RoleEntity> findRolesWithFilters(

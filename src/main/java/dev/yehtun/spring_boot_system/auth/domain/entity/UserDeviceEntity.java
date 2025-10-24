@@ -51,17 +51,26 @@ public class UserDeviceEntity extends BaseEntity {
     @Column(name = "device_name", length = 100)
     private String deviceName;
 
+    @Column(name = "device_id", length = 100)
+    private String deviceId;
+
     @Column(name = "device_type", length = 50)
     private String deviceType;
 
     @Column(name = "device_os", length = 50)
     private String deviceOs;
 
+    @Column(name = "platform", length = 50)
+    private String platform;
+
     @Column(name = "browser", length = 100)
     private String browser;
 
     @Column(name = "device_fingerprint", length = 500, nullable = false, unique = true)
     private String deviceFingerprint;
+
+    @Column(name = "fingerprint", length = 500)
+    private String fingerprint;
 
     @Column(name = "is_trusted", nullable = false)
     @Builder.Default
@@ -76,6 +85,12 @@ public class UserDeviceEntity extends BaseEntity {
 
     @Column(name = "ip_address", length = 45)
     private String ipAddress;
+
+    @Column(name = "last_ip_address", length = 45)
+    private String lastIpAddress;
+
+    @Column(name = "registered_at")
+    private LocalDateTime registeredAt;
 
     @Column(name = "location")
     private String location;

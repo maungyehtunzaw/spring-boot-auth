@@ -8,7 +8,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import dev.yehtun.spring_boot_system.shared.domain.BaseEntity;
+import dev.yehtun.spring_boot_system.shared.domain.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -41,7 +41,7 @@ import lombok.ToString;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class TwoFactorAuthEntity extends BaseEntity {
+public class TwoFactorAuthEntity extends AuditableEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
@@ -71,6 +71,27 @@ public class TwoFactorAuthEntity extends BaseEntity {
     @Builder.Default
     private Integer totalUsageCount = 0;
 
+    @Column(name = "failed_attempts", nullable = false)
+    @Builder.Default
+    private Integer failedAttempts = 0;
+
+    @Column(name = "last_failed_attempt_at")
+    private LocalDateTime lastFailedAttemptAt;
+
+    @Column(name = "method", nullable = false, length = 20)
+    private String method = "TOTP"; // Default to TOTP
+
+    @Column(name = "verified", nullable = false)
+    private boolean verified = false;
+
+    @Column(name = "verified_at")
+    private LocalDateTime verifiedAt;
+
+    @Column(name = "last_verified_at")
+    private LocalDateTime lastVerifiedAt;
+
+    // Constructors
+    
     // Business Logic Methods
 
     /**

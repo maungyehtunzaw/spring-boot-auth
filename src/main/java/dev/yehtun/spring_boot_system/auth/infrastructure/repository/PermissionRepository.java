@@ -109,7 +109,7 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, UU
     @Query("SELECT p FROM PermissionEntity p WHERE p.active = :active")
     Page<PermissionEntity> findByActive(@Param("active") boolean active, Pageable pageable);
     
-    @Query("SELECT p FROM PermissionEntity p WHERE p.category = :category AND p.active = true")
+    @Query("SELECT p FROM PermissionEntity p WHERE p.category = :category AND p.isActive = true")
     List<PermissionEntity> findActiveByCategoryOrderByName(@Param("category") String category);
 
     // Permission validation and checking

@@ -3,7 +3,7 @@ package dev.yehtun.spring_boot_system.auth.domain.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import dev.yehtun.spring_boot_system.shared.domain.BaseEntity;
+import dev.yehtun.spring_boot_system.shared.domain.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,7 +37,7 @@ import lombok.ToString;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class UserSessionEntity extends BaseEntity {
+public class UserSessionEntity extends AuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

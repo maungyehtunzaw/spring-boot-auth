@@ -64,7 +64,7 @@ public interface UserSessionRepository extends JpaRepository<UserSessionEntity, 
     @Query("SELECT s FROM UserSessionEntity s WHERE s.userAgent = :userAgent")
     List<UserSessionEntity> findByUserAgent(@Param("userAgent") String userAgent);
     
-    @Query("SELECT s FROM UserSessionEntity s WHERE s.deviceFingerprint = :deviceFingerprint")
+    @Query("SELECT s FROM UserSessionEntity s WHERE s.device.deviceFingerprint = :deviceFingerprint")
     List<UserSessionEntity> findByDeviceFingerprint(@Param("deviceFingerprint") String deviceFingerprint);
     
     @Query("SELECT s FROM UserSessionEntity s WHERE s.user.id = :userId AND s.ipAddress = :ipAddress")

@@ -42,6 +42,9 @@ public class RoleEntity extends AuditableEntity {
     @Column(name = "name", length = 50, nullable = false, unique = true)
     private String name;
 
+    @Column(name = "code", length = 50, nullable = false, unique = true)
+    private String code;
+
     @Column(name = "description", length = 255)
     private String description;
 
