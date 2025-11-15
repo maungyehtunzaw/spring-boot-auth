@@ -26,6 +26,8 @@ import dev.yehtun.spring_boot_system.auth.domain.enums.UserStatus;
 import dev.yehtun.spring_boot_system.auth.domain.enums.UserType;
 import dev.yehtun.spring_boot_system.auth.infrastructure.repository.UserRepository;
 import dev.yehtun.spring_boot_system.auth.infrastructure.service.AuthServiceImpl;
+import dev.yehtun.spring_boot_system.auth.domain.service.SessionService;
+import dev.yehtun.spring_boot_system.auth.domain.service.SecurityService;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Auth service performance characteristics")
